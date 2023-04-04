@@ -5,8 +5,17 @@ use std::net::TcpStream;
 
 fn handle_connection(mut stream: TcpStream) {
     let mut buf = [0; 512];
-    stream.read(&mut buf).unwrap();
-    stream.write("+PONG\r\n".as_bytes()).unwrap();
+
+    loop {
+        let bytes_read = stream.read(&mut buf).unwrap();
+
+        if bytes_read == 0 {
+            println!("Connection closed");
+            break;
+        }
+
+        stream.write("+PONG\r\n".as_bytes()).unwrap();
+    }
 }
 
 fn main() {
